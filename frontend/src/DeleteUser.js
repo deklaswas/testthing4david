@@ -7,7 +7,12 @@ const DeleteUser = ( {FetchCallBack} ) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(email);
-    const response = await axios.delete('http://localhost:3000/api/users/'+email );
+
+    
+    const token = localStorage.getItem("authToken");
+    const headers = { 'Authorization': 'Bearer '+token };
+
+    const response = await axios.delete('http://localhost:3000/api/users/'+email, {headers} );
     console.log(response.data);
     setEmail('');
     FetchCallBack();

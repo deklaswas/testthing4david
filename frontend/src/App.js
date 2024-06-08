@@ -4,23 +4,30 @@ import AddUser from './AddUser';
 import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
 import ShowUser from './ShowUser';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext } from 'react';
 import axios from 'axios';
 
 import './App.css';
 
+
 function App() {
   
-  const [users, setUsers] = useState([]);
+const [users, setUsers] = useState([]);
+const [renderModal, setRenderModal] = useState(false)
 
-  const fetchUsers = async () => {
-    const response = await axios.get('http://localhost:3000/api/users');
-    setUsers(response.data);
-  };
+const fetchUsers = async () => {
+  const token = localStorage.getItem("authToken");
+  const headers = { 'Authorization': 'Bearer '+token };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const response = await axios.get('http://localhost:3000/api/users', {headers});
+  setUsers(response.data);
+};
+
+useEffect(() => {
+  fetchUsers();
+}, []);
+
+
 
   return (
     <div className="App">
@@ -28,11 +35,21 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
-          <UserList users={users}></UserList>
-          <AddUser FetchCallBack={fetchUsers}></AddUser>
 
-          <EditUser FetchCallBack={fetchUsers}></EditUser>
-          <ShowUser></ShowUser>
+          <listContext.Provider value={users}>
+          <UserList FetchCallBack={fetchUsers}></UserList>
+          </listContext.Provider>
+
+          <button onClick={ ()=> {
+            setRenderModal( renderModal => !renderModal )
+          } } >Add User</button>
+
+          {renderModal && <AddUser  FetchCallBack={fetchUsers}></AddUser>}
+          {renderModal && <EditUser FetchCallBack={fetchUsers}></EditUser>}
+          
+
+          
+          <ShowUser FetchCallBack={fetchUsers}></ShowUser>
 
           <DeleteUser FetchCallBack={fetchUsers}></DeleteUser>
           
@@ -50,4 +67,5 @@ function App() {
   );
 }
 
+export const listContext = createContext();
 export default App;

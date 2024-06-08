@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const AddUser = ( {FetchCallBack} ) => {
+
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
@@ -9,7 +11,11 @@ const AddUser = ( {FetchCallBack} ) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await axios.post('http://localhost:3000/api/users', { name, email });
+    
+    const token = localStorage.getItem("authToken");
+    const headers = { 'Authorization': 'Bearer '+token };
+
+    const response = await axios.post('http://localhost:3000/api/users', { name, email }, {headers});
     console.log(response.data);
     setName('');
     setEmail('');
