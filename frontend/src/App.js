@@ -1,19 +1,18 @@
-import logo from './logo.svg';
 import UserList from './UserList';
 import AddUser from './AddUser';
-import DeleteUser from './DeleteUser';
 import EditUser from './EditUser';
-import ShowUser from './ShowUser';
 import { useEffect, useState, createContext } from 'react';
 import axios from 'axios';
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
 
-import './App.css';
 
 
 function App() {
   
 const [users, setUsers] = useState([]);
-const [renderModal, setRenderModal] = useState(false)
+const [renderModalAdd, setRenderModalAdd] = useState(false)
+const [renderModalEdit, setRenderModalEdit] = useState(false)
 
 const fetchUsers = async () => {
   const token = localStorage.getItem("authToken");
@@ -23,6 +22,23 @@ const fetchUsers = async () => {
   setUsers(response.data);
 };
 
+const [editID, setEditID] = useState(0);
+const [editName, setEditName] = useState("");
+const [editEmail, setEditEmail] = useState("");
+const showEditUsers = async (ID, name, email) => {
+  setRenderModalEdit(true);
+  setRenderModalAdd(false);
+  setEditID(ID);
+  setEditName(name);
+  setEditEmail(email);
+
+  console.log(name)
+  console.log(ID)
+  console.log(email)
+};
+
+
+
 useEffect(() => {
   fetchUsers();
 }, []);
@@ -30,42 +46,40 @@ useEffect(() => {
 
 
   return (
-    <div className="App">
+    <Container >
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+
+          <h2>Database</h2>
+          
+          <Button
+            variant="contained"
+            type="submit"
+            color="primary"
+            size="large"
+            onClick={ ()=> {
+              setRenderModalAdd( renderModalAdd => !renderModalAdd );
+              setRenderModalEdit(false);
+            }}
+          >Add User</Button>
+
 
           <listContext.Provider value={users}>
-          <UserList FetchCallBack={fetchUsers}></UserList>
+          <UserList FetchCallBack={fetchUsers} editCallBack={showEditUsers}></UserList>
           </listContext.Provider>
 
-          <button onClick={ ()=> {
-            setRenderModal( renderModal => !renderModal )
-          } } >Add User</button>
-
-          {renderModal && <AddUser  FetchCallBack={fetchUsers}></AddUser>}
-          {renderModal && <EditUser FetchCallBack={fetchUsers}></EditUser>}
+          {renderModalAdd && <AddUser  FetchCallBack={fetchUsers}></AddUser>}
           
+          <editContext.Provider value={editID}>
+          {renderModalEdit && <EditUser FetchCallBack={fetchUsers} OriginalName={editName} OriginalEmail={editEmail} ></EditUser>}
+          </editContext.Provider>
 
-          
-          <ShowUser FetchCallBack={fetchUsers}></ShowUser>
-
-          <DeleteUser FetchCallBack={fetchUsers}></DeleteUser>
-          
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
-    </div>
+    </Container>
   );
 }
 
 export const listContext = createContext();
+export const editContext = createContext();
 export default App;

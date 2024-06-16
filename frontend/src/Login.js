@@ -5,61 +5,78 @@ import axios from 'axios';
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 
-import './Login.css';
+import { Typography } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
 
 
-
-function Login() {
+export default function Login() {
   const [name, setName] = useState('');
   const [password, setpassword] = useState('');
-  const [errorMessage, setError] = useState('');
-  const [authToken, setToken] = useState('');
+  const [errorMessage, setError] = useState("");
 
   const homePageNavigator = useNavigate('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await axios.post('http://localhost:3000/api/login', { name, password });
-    console.log(response.data);
+    //console.log(response.data);
 
     const token=response.data.accessToken
-    console.log(token);
     setError("Loading...")
     setName('');
     setpassword('');
 
-    if (response.data === 'error') setError("Incorrect Username or Password"); else {
-
+    if (response.data === 'error') setError("ERROR: Incorrect Username or Password"); else {
       localStorage.setItem("authToken", token);
-      const tokenTest = localStorage.getItem("authToken");
-      console.log(tokenTest);
-
-      setToken(token)
       homePageNavigator("/homepage")
     }
-    
-
-    //console.log(errorMessage)
   };
 
-  return (
-    <div className="Login">
-      <h2 className="Login-header">Login
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Username </label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-          </div>
-          <div>
-            <label>Password </label>
-            <input type="password" value={password} onChange={(e) => setpassword(e.target.value)} required />
-          </div>
-          <button type="submit">Login</button>
-        </form>
-        {errorMessage}
-      </h2>
-    </div>
-  );
-};
+ 
 
-export default Login;
+  return (
+    <Container maxWidth="sm">
+      <Typography variant="h2" color="primary"> <h2>Sign in</h2></Typography>
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={3} >
+
+          <TextField
+            id="outlined-basic"
+            label="Username"
+            variant="outlined"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            error={errorMessage!==""}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Password"
+            variant="outlined"
+            type="password"
+            value={password}
+            onChange={(e) => setpassword(e.target.value)}
+            required 
+            error={errorMessage!==""}
+          />
+          <Button
+            variant="contained"
+            type="submit"
+            color="primary"
+            size="large"
+          >Sign in</Button>
+
+          <Typography 
+            variant="overline"
+            color="textSecondary"
+          >{errorMessage}</Typography>
+
+        </Stack>
+      </form>
+    </Container>
+  );
+};;

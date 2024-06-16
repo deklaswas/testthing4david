@@ -98,9 +98,10 @@ app.delete('/api/users/:ID', authenticateToken, (req, res) => {
 });
 
 //'UPDATE users SET name = ? WHERE email = ?'
-app.put('/api/users', (req, res) => {
-  const { name, email } = req.body;
-  db.query('UPDATE users SET name = ? WHERE email = ?', [name, email], (err, result) => {
+app.put('/api/users', authenticateToken, (req, res) => {
+  const { editID, name, email } = req.body;
+  console.log(req.body)
+  db.query('UPDATE users SET name = ?, email = ? WHERE ID = ?', [name, email, editID], (err, result) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
