@@ -28,7 +28,7 @@ const EditUser = ( {FetchCallBack, OriginalName, OriginalEmail } ) => {
     const token = localStorage.getItem("authToken");
     const headers = { 'Authorization': 'Bearer '+token };
 
-    const response = await axios.put('http://localhost:3000/api/users', { editID, name, email }, {headers});
+    const response = await axios.put('159.89.239.40:3000/api/users', { editID, name, email }, {headers});
     console.log(response.data);
     setName('');
     setEmail('');

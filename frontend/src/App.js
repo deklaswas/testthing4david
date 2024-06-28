@@ -18,7 +18,7 @@ const fetchUsers = async () => {
   const token = localStorage.getItem("authToken");
   const headers = { 'Authorization': 'Bearer '+token };
 
-  const response = await axios.get('http://localhost:3000/api/users', {headers});
+  const response = await axios.get('159.89.239.40:3000/api/users', {headers});
   setUsers(response.data);
 };
 

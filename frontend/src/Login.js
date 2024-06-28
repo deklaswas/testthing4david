@@ -21,7 +21,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await axios.post('http://localhost:3000/api/login', { name, password });
+    const response = await axios.post('159.89.239.40:5000/api/login', { name, password });
     //console.log(response.data);
 
     const token=response.data.accessToken

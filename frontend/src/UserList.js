@@ -45,23 +45,10 @@ const UserList = ( {FetchCallBack, editCallBack} ) => {
     const token = localStorage.getItem("authToken");
     const headers = { 'Authorization': 'Bearer '+token };
     
-    const response = await axios.delete('http://localhost:3000/api/users/'+ID, {headers} );
+    const response = await axios.delete('159.89.239.40:3000/api/users/'+ID, {headers} );
     FetchCallBack();
   };
 
-  /*
-  const handleSubmit = ID => async (e) => {
-    e.preventDefault();
-    
-    const token = localStorage.getItem("authToken");
-    const headers = { 'Authorization': 'Bearer '+token };
-    
-    const response = await axios.put('http://localhost:3000/api/users',+ID, {headers, name, email });
-    console.log(response.data);
-    setName('');
-    setEmail('');
-    FetchCallBack();
-  };*/
 
   return (
     <div>
